@@ -41,13 +41,20 @@ export const UserManagementUpdate = () => {
     } else {
       dispatch(updateUser(values));
     }
-    handleClose();
   };
 
   const user = useAppSelector(state => state.userManagement.user);
   const loading = useAppSelector(state => state.userManagement.loading);
   const updating = useAppSelector(state => state.userManagement.updating);
+  const updateSuccess = useAppSelector(state => state.userManagement.updateSuccess);
   const authorities = useAppSelector(state => state.userManagement.authorities);
+
+  // Navigate back only once the request has completed, otherwise a concurrent request may observe a stale state.
+  useEffect(() => {
+    if (updateSuccess) {
+      handleClose();
+    }
+  }, [updateSuccess]);
 
   return (
     <div>
@@ -152,7 +159,6 @@ export const UserManagementUpdate = () => {
                 data-cy="activated"
                 check
                 value={true}
-                disabled={!user.id}
                 label={translate('userManagement.activated')}
               />
               <ValidatedField type="select" name="langKey" data-cy="langKey" label={translate('userManagement.langKey')}>

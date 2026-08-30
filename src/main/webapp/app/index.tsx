@@ -13,7 +13,8 @@ import ErrorBoundary from 'app/shared/error/error-boundary';
 import { clearAuthentication } from 'app/shared/reducers/authentication';
 
 const store = getStore();
-registerLocale(store);
+// Load the translations before rendering.
+await registerLocale(store);
 
 const actions = bindActionCreators({ clearAuthentication }, store.dispatch);
 setupAxiosInterceptors(() => actions.clearAuthentication('login.error.unauthorized'));
@@ -23,15 +24,10 @@ loadIcons();
 const rootEl = document.getElementById('root');
 const root = createRoot(rootEl!);
 
-const render = Component =>
-  root.render(
-    <ErrorBoundary>
-      <Provider store={store}>
-        <div>
-          <Component />
-        </div>
-      </Provider>
-    </ErrorBoundary>,
-  );
-
-render(AppComponent);
+root.render(
+  <ErrorBoundary>
+    <Provider store={store}>
+      <AppComponent />
+    </Provider>
+  </ErrorBoundary>,
+);

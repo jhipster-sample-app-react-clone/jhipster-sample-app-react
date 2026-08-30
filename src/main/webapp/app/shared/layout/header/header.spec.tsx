@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import React from 'react';
 import { MemoryRouter } from 'react-router';
 
@@ -54,8 +54,7 @@ describe('Header', () => {
     mountedWrapper = undefined;
   });
 
-  // All tests will go here
-  it('Renders a Header component in dev profile with LoadingBar, Navbar, Nav and dev ribbon.', () => {
+  it('should render a Header component in dev profile with LoadingBar, Navbar, Nav and dev ribbon', () => {
     const html = wrapper();
 
     // Find Navbar component
@@ -70,7 +69,7 @@ describe('Header', () => {
     expect(html).toContain('ribbon');
   });
 
-  it('Renders a Header component in prod profile with LoadingBar, Navbar, Nav.', () => {
+  it('should render a Header component in prod profile with LoadingBar, Navbar, Nav', () => {
     const html = wrapper(prodProps);
 
     // Find Navbar component
@@ -85,7 +84,7 @@ describe('Header', () => {
     expect(html).not.toContain('ribbon');
   });
 
-  it('Renders a Header component in prod profile with logged in User', () => {
+  it('should render a Header component in prod profile with logged-in User', () => {
     const html = wrapper(userProps);
 
     // Find Navbar component
@@ -98,7 +97,7 @@ describe('Header', () => {
     expect(html).toContain('account-menu');
   });
 
-  it('Renders a Header component in prod profile with no logged in User', () => {
+  it('should render a Header component in prod profile with no logged-in User', () => {
     const html = wrapper(guestProps);
 
     // Find Navbar component

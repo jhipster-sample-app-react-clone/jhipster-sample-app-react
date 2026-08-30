@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { configureStore } from '@reduxjs/toolkit';
 import axios from 'axios';
@@ -17,13 +17,6 @@ import reducer, {
 } from './bank-account.reducer';
 
 describe('Entities reducer tests', () => {
-  function isEmpty(element): boolean {
-    if (Array.isArray(element)) {
-      return element.length === 0;
-    }
-    return Object.keys(element).length === 0;
-  }
-
   const initialState: EntityState<IBankAccount> = {
     loading: false,
     errorMessage: null,
@@ -40,8 +33,8 @@ describe('Entities reducer tests', () => {
       updating: false,
       updateSuccess: false,
     });
-    expect(isEmpty(state.entities));
-    expect(isEmpty(state.entity));
+    expect(state.entities).toEqual([]);
+    expect(state.entity).toEqual(defaultValue);
   }
 
   function testMultipleTypes(types, payload, testFunction, error?) {

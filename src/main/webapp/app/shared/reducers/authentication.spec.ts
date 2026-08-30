@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Storage } from 'react-jhipster';
 
 import { configureStore, createReducer } from '@reduxjs/toolkit';
@@ -211,28 +211,26 @@ describe('Authentication reducer tests', () => {
       });
     });
     it('clears the session token on clearAuthToken', async () => {
-      const AUTH_TOKEN_KEY = AUTHENTICATION_TOKEN_KEY;
       const loginResponse = { headers: { authorization: 'Bearer TestToken' } };
       axios.post = vi.fn().mockResolvedValue(loginResponse);
 
       await store.dispatch(login('test', 'test'));
-      expect(Storage.session.get(AUTH_TOKEN_KEY)).toBe('TestToken');
-      expect(Storage.local.get(AUTH_TOKEN_KEY)).toBe(undefined);
+      expect(Storage.session.get(AUTHENTICATION_TOKEN_KEY)).toBe('TestToken');
+      expect(Storage.local.get(AUTHENTICATION_TOKEN_KEY)).toBeUndefined();
       clearAuthToken();
-      expect(Storage.session.get(AUTH_TOKEN_KEY)).toBe(undefined);
-      expect(Storage.local.get(AUTH_TOKEN_KEY)).toBe(undefined);
+      expect(Storage.session.get(AUTHENTICATION_TOKEN_KEY)).toBeUndefined();
+      expect(Storage.local.get(AUTHENTICATION_TOKEN_KEY)).toBeUndefined();
     });
     it('clears the local storage token on clearAuthToken', async () => {
-      const AUTH_TOKEN_KEY = AUTHENTICATION_TOKEN_KEY;
       const loginResponse = { headers: { authorization: 'Bearer TestToken' } };
       axios.post = vi.fn().mockResolvedValue(loginResponse);
 
       await store.dispatch(login('user', 'user', true));
-      expect(Storage.session.get(AUTH_TOKEN_KEY)).toBe(undefined);
-      expect(Storage.local.get(AUTH_TOKEN_KEY)).toBe('TestToken');
+      expect(Storage.session.get(AUTHENTICATION_TOKEN_KEY)).toBeUndefined();
+      expect(Storage.local.get(AUTHENTICATION_TOKEN_KEY)).toBe('TestToken');
       clearAuthToken();
-      expect(Storage.session.get(AUTH_TOKEN_KEY)).toBe(undefined);
-      expect(Storage.local.get(AUTH_TOKEN_KEY)).toBe(undefined);
+      expect(Storage.session.get(AUTHENTICATION_TOKEN_KEY)).toBeUndefined();
+      expect(Storage.local.get(AUTHENTICATION_TOKEN_KEY)).toBeUndefined();
     });
   });
 });

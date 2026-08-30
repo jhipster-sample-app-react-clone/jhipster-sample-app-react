@@ -2,6 +2,7 @@ import React from 'react';
 import { Route } from 'react-router';
 
 import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
+import PageNotFound from 'app/shared/error/page-not-found';
 
 import BankAccount from './bank-account';
 import Label from './label';
@@ -17,6 +18,7 @@ export default () => {
         <Route path="/label/*" element={<Label />} />
         <Route path="/operation/*" element={<Operation />} />
         {/* jhipster-needle-add-route-path - JHipster will add routes here */}
+        <Route path="*" element={<PageNotFound />} />
       </ErrorBoundaryRoutes>
     </div>
   );

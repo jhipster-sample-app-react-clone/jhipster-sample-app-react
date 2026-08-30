@@ -33,8 +33,7 @@ describe('private-route component', () => {
     );
   };
 
-  // All tests will go here
-  it('Should throw error when falsy children are provided', () => {
+  it('should throw error when falsy children are provided', () => {
     const originalError = console.error;
     console.error = vi.fn();
     expect(() =>
@@ -49,7 +48,7 @@ describe('private-route component', () => {
     console.error = originalError;
   });
 
-  it('Should render an error message when the user has no authorities', () => {
+  it('should render an error message when the user has no authorities', () => {
     const { container } = wrapper(
       <PrivateRoute>
         <TestComp />
@@ -65,7 +64,7 @@ describe('private-route component', () => {
     expect(container.innerHTML).toMatch(/<div class="insufficient-authority"><div class="alert alert-danger">.*<\/div><\/div>/);
   });
 
-  it('Should render a route for the component provided when authenticated', () => {
+  it('should render a route for the component provided when authenticated', () => {
     const { container } = wrapper(
       <PrivateRoute>
         <TestComp />
@@ -81,7 +80,7 @@ describe('private-route component', () => {
     expect(container.innerHTML).toEqual('<div>Test</div>');
   });
 
-  it('Should redirect when not authenticated', () => {
+  it('should redirect when not authenticated', () => {
     const { container } = wrapper(
       <Routes>
         <Route
@@ -108,19 +107,18 @@ describe('private-route component', () => {
 });
 
 describe('hasAnyAuthority', () => {
-  // All tests will go here
-  it('Should return false when authorities is invalid', () => {
+  it('should return false when authorities is invalid', () => {
     expect(hasAnyAuthority(undefined, undefined)).toEqual(false);
     expect(hasAnyAuthority(null, [])).toEqual(false);
     expect(hasAnyAuthority([], [])).toEqual(false);
     expect(hasAnyAuthority([], [Authority.USER])).toEqual(false);
   });
 
-  it('Should return true when authorities is valid and hasAnyAuthorities is empty', () => {
+  it('should return true when authorities is valid and hasAnyAuthorities is empty', () => {
     expect(hasAnyAuthority([Authority.USER], [])).toEqual(true);
   });
 
-  it('Should return true when authorities is valid and hasAnyAuthorities contains an authority', () => {
+  it('should return true when authorities is valid and hasAnyAuthorities contains an authority', () => {
     expect(hasAnyAuthority([Authority.USER], [Authority.USER])).toEqual(true);
     expect(hasAnyAuthority([Authority.USER, Authority.ADMIN], [Authority.USER])).toEqual(true);
     expect(hasAnyAuthority([Authority.USER, Authority.ADMIN], [Authority.USER, Authority.ADMIN])).toEqual(true);
@@ -128,7 +126,7 @@ describe('hasAnyAuthority', () => {
     expect(hasAnyAuthority([Authority.USER, Authority.ADMIN], [Authority.ADMIN])).toEqual(true);
   });
 
-  it('Should return false when authorities is valid and hasAnyAuthorities does not contain an authority', () => {
+  it('should return false when authorities is valid and hasAnyAuthorities does not contain an authority', () => {
     expect(hasAnyAuthority([Authority.USER], [Authority.ADMIN])).toEqual(false);
     expect(hasAnyAuthority([Authority.USER, Authority.ADMIN], ['ROLE_USERSS'])).toEqual(false);
     expect(hasAnyAuthority([Authority.USER, Authority.ADMIN], ['ROLEUSER', 'ROLEADMIN'])).toEqual(false);

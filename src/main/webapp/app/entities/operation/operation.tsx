@@ -63,7 +63,7 @@ export const Operation = () => {
   }, [paginationState.activePage]);
 
   const handleLoadMore = () => {
-    if ((globalThis as any).pageYOffset > 0) {
+    if (globalThis.scrollY > 0) {
       setPaginationState({
         ...paginationState,
         activePage: paginationState.activePage + 1,

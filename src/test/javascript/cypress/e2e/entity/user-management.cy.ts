@@ -14,7 +14,7 @@ describe('UserManagement e2e test', () => {
   const userManagementPageUrl = '/admin/user-management';
   let username: string;
   let password: string;
-  const userManagementSample = { login: 'Haleigh.Koelpin', email: 'Kaylin_Gibson71@gmail.com' };
+  const userManagementSample = { login: 'Josiane14', email: 'Jennyfer93@hotmail.com' };
 
   let userManagement;
 
@@ -164,7 +164,7 @@ describe('UserManagement e2e test', () => {
     });
   });
 
-  describe.skip('new UserManagement page', () => {
+  describe('new UserManagement page', () => {
     beforeEach(() => {
       cy.visit(userManagementPageUrl);
       cy.get(entityCreateButtonSelector).click();
@@ -172,23 +172,23 @@ describe('UserManagement e2e test', () => {
     });
 
     it('should create an instance of UserManagement', () => {
-      cy.get(`[data-cy="login"]`).type('Harvey_Wilderman');
-      cy.get(`[data-cy="login"]`).should('have.value', 'Harvey_Wilderman');
+      cy.get(`[data-cy="login"]`).type('Gunner_Wilderman');
+      cy.get(`[data-cy="login"]`).should('have.value', 'Gunner_Wilderman');
 
-      cy.get(`[data-cy="firstName"]`).type('Florence');
-      cy.get(`[data-cy="firstName"]`).should('have.value', 'Florence');
+      cy.get(`[data-cy="firstName"]`).type('Estrella');
+      cy.get(`[data-cy="firstName"]`).should('have.value', 'Estrella');
 
       cy.get(`[data-cy="lastName"]`).type('Bashirian');
       cy.get(`[data-cy="lastName"]`).should('have.value', 'Bashirian');
 
-      cy.get(`[data-cy="email"]`).type('Nadia54@yahoo.com');
-      cy.get(`[data-cy="email"]`).should('have.value', 'Nadia54@yahoo.com');
+      cy.get(`[data-cy="email"]`).type('Norwood54@yahoo.com');
+      cy.get(`[data-cy="email"]`).should('have.value', 'Norwood54@yahoo.com');
+
+      cy.get(`[data-cy="activated"]`).should('be.checked');
+      cy.get(`[data-cy="activated"]`).click();
+      cy.get(`[data-cy="activated"]`).should('not.be.checked');
 
       cy.get(`[data-cy="langKey"]`).select('en');
-
-      cy.get(`[data-cy="activated"]`).should('not.be.checked');
-      cy.get(`[data-cy="activated"]`).click();
-      cy.get(`[data-cy="activated"]`).should('be.checked');
 
       cy.get(entityCreateSaveButtonSelector).click();
 

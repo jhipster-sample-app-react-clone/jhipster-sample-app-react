@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { configureStore } from '@reduxjs/toolkit';
 import axios from 'axios';
@@ -35,9 +35,9 @@ describe('User management reducer tests', () => {
       updateSuccess: false,
       totalItems: 0,
     });
-    expect(isEmpty(state.users));
-    expect(isEmpty(state.authorities));
-    expect(isEmpty(state.user));
+    expect(isEmpty(state.users)).toBe(true);
+    expect(isEmpty(state.authorities)).toBe(true);
+    expect(state.user).toEqual(defaultValue);
   }
 
   function testMultipleTypes(types, payload, testFunction, error?) {
@@ -154,7 +154,7 @@ describe('User management reducer tests', () => {
         updating: false,
         updateSuccess: true,
       });
-      expect(isEmpty(toTest.user));
+      expect(toTest.user).toEqual(defaultValue);
     });
   });
 

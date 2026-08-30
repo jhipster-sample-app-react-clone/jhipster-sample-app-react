@@ -1,7 +1,7 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { TranslatorContext } from 'react-jhipster';
 
-import locale, { addTranslationSourcePrefix, loaded, setLocale, updateLocale } from 'app/shared/reducers/locale';
+import locale, { loaded, setLocale, updateLocale } from 'app/shared/reducers/locale';
 
 vi.mock('../../../i18n/en/en.js', () => ({ default: { key: 'value' } }));
 
@@ -31,7 +31,6 @@ describe('Locale reducer tests', () => {
     const localeState = locale(
       {
         currentLocale: defaultLocale,
-        sourcePrefixes: [],
         lastChange: Date.now(),
         loadedKeys: [],
       },
@@ -44,21 +43,23 @@ describe('Locale reducer tests', () => {
   });
 
   describe('setLocale reducer', () => {
+    beforeEach(() => {
+      dispatch.mockClear();
+    });
+
     describe('with default language loaded', () => {
       it('dispatches updateLocale action for default locale', async () => {
         TranslatorContext.setDefaultLocale(defaultLocale);
-        expect(Object.keys(TranslatorContext.context.translations)).not.toContainEqual(defaultLocale);
-
-        const getState = vi.fn(() => ({ locale: { sourcePrefixes: '', loadedLocales: [defaultLocale], loadedKeys: [] } }));
-
+        const getState = vi.fn(() => ({ locale: { loadedKeys: [defaultLocale] } }));
         const result = await setLocale(defaultLocale)(dispatch, getState, extra);
-
         expect(dispatch).toHaveBeenCalledWith(
           expect.objectContaining({
             type: setLocale.pending.type,
             meta: expect.objectContaining({ requestStatus: 'pending' }),
           }),
         );
+        expect(dispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: loaded.type }));
+        expect(dispatch).toHaveBeenCalledWith(updateLocale(defaultLocale));
         expect(setLocale.fulfilled.match(result)).toBe(true);
       });
     });
@@ -66,115 +67,30 @@ describe('Locale reducer tests', () => {
     describe('with no language loaded', () => {
       it('dispatches loaded and updateLocale action for default locale', async () => {
         TranslatorContext.setDefaultLocale(defaultLocale);
-        expect(Object.keys(TranslatorContext.context.translations)).not.toContainEqual(defaultLocale);
-
-        const getState = vi.fn(() => ({ locale: { sourcePrefixes: [], loadedLocales: [], loadedKeys: [] } }));
-
+        const getState = vi.fn(() => ({ locale: { loadedKeys: [] } }));
         const result = await setLocale(defaultLocale)(dispatch, getState, extra);
-
-        expect(dispatch).toHaveBeenCalledWith(
-          expect.objectContaining({
-            type: setLocale.pending.type,
-            meta: expect.objectContaining({ requestStatus: 'pending' }),
-          }),
-        );
+        expect(dispatch).toHaveBeenCalledWith(loaded({ keys: [defaultLocale] }));
+        expect(dispatch).toHaveBeenCalledWith(updateLocale(defaultLocale));
         expect(setLocale.fulfilled.match(result)).toBe(true);
       });
     });
   });
 
-  describe('addTranslationSourcePrefix reducer', () => {
-    const sourcePrefix = 'foo/';
-
-    describe('with no prefixes and keys loaded', () => {
-      it('dispatches loaded action with keys and sourcePrefix', async () => {
-        const getState = vi.fn(() => ({
-          locale: { currentLocale: defaultLocale, sourcePrefixes: [], loadedLocales: [], loadedKeys: [] },
-        }));
-
-        const result = await addTranslationSourcePrefix(sourcePrefix)(dispatch, getState, extra);
-
-        expect(dispatch).toHaveBeenCalledWith(
-          expect.objectContaining({
-            type: addTranslationSourcePrefix.pending.type,
-            meta: expect.objectContaining({ requestStatus: 'pending' }),
-          }),
-        );
-        expect(addTranslationSourcePrefix.fulfilled.match(result)).toBe(true);
-      });
-    });
-
-    describe('with prefix already added', () => {
-      it("doesn't dispatch loaded action", async () => {
-        const getState = vi.fn(() => ({
-          locale: { currentLocale: defaultLocale, sourcePrefixes: [sourcePrefix], loadedLocales: [], loadedKeys: [] },
-        }));
-
-        const result = await addTranslationSourcePrefix(sourcePrefix)(dispatch, getState, extra);
-
-        expect(dispatch).toHaveBeenCalledWith(
-          expect.objectContaining({
-            type: addTranslationSourcePrefix.pending.type,
-            meta: expect.objectContaining({ requestStatus: 'pending' }),
-          }),
-        );
-        expect(addTranslationSourcePrefix.fulfilled.match(result)).toBe(true);
-      });
-    });
-
-    describe('with key already loaded', () => {
-      it("doesn't dispatch loaded action", async () => {
-        const getState = vi.fn(() => ({
-          locale: { currentLocale: defaultLocale, sourcePrefixes: [], loadedLocales: [], loadedKeys: [`${sourcePrefix}${defaultLocale}`] },
-        }));
-
-        const result = await addTranslationSourcePrefix(sourcePrefix)(dispatch, getState, extra);
-
-        expect(dispatch).toHaveBeenCalledWith(
-          expect.objectContaining({
-            type: addTranslationSourcePrefix.pending.type,
-            meta: expect.objectContaining({ requestStatus: 'pending' }),
-          }),
-        );
-        expect(addTranslationSourcePrefix.fulfilled.match(result)).toBe(true);
-      });
-    });
-  });
-
   describe('loaded reducer', () => {
-    describe('with empty state', () => {
-      let initialState;
-      beforeEach(() => {
-        initialState = { currentLocale: defaultLocale, sourcePrefixes: [], loadedLocales: [], loadedKeys: [] };
-      });
+    let initialState;
 
-      it("and empty parameter, don't adds anything", () => {
-        const expectedState = { currentLocale: defaultLocale, sourcePrefixes: [], loadedLocales: [], loadedKeys: [] };
+    beforeEach(() => {
+      initialState = { currentLocale: defaultLocale, lastChange: 0, loadedKeys: [] };
+    });
 
-        const localeState = locale(initialState, loaded({}));
-        expect(localeState).toMatchObject(expectedState);
-      });
+    it("and empty parameter, doesn't add anything", () => {
+      const localeState = locale(initialState, loaded({}));
+      expect(localeState).toMatchObject({ currentLocale: defaultLocale, loadedKeys: [] });
+    });
 
-      it('and keys parameter, adds to loadedKeys', () => {
-        const expectedState = { currentLocale: defaultLocale, sourcePrefixes: [], loadedLocales: [], loadedKeys: ['foo'] };
-
-        const localeState = locale(initialState, loaded({ keys: ['foo'] }));
-        expect(localeState).toMatchObject(expectedState);
-      });
-
-      it('and sourcePrefix parameter, adds to sourcePrefixes', () => {
-        const expectedState = { currentLocale: defaultLocale, sourcePrefixes: ['foo'], loadedLocales: [], loadedKeys: [] };
-
-        const localeState = locale(initialState, loaded({ sourcePrefix: 'foo' }));
-        expect(localeState).toMatchObject(expectedState);
-      });
-
-      it('and locale parameter, adds to loadedLocales', () => {
-        const expectedState = { currentLocale: defaultLocale, sourcePrefixes: [], loadedLocales: ['foo'], loadedKeys: [] };
-
-        const localeState = locale(initialState, loaded({ locale: 'foo' }));
-        expect(localeState).toMatchObject(expectedState);
-      });
+    it('and keys parameter, adds to loadedKeys', () => {
+      const localeState = locale(initialState, loaded({ keys: ['foo'] }));
+      expect(localeState).toMatchObject({ currentLocale: defaultLocale, loadedKeys: ['foo'] });
     });
   });
 });

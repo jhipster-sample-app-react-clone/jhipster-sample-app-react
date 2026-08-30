@@ -11,14 +11,13 @@ import Login from 'app/modules/login/login';
 import Logout from 'app/modules/login/logout';
 import PrivateRoute from 'app/shared/auth/private-route';
 import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
-import PageNotFound from 'app/shared/error/page-not-found';
 import { Authority } from 'app/shared/jhipster/constants';
 
 const loading = <div>loading ...</div>;
 
-const Account = React.lazy(() => import(/* webpackChunkName: "account" */ 'app/modules/account'));
+const Account = React.lazy(() => import('app/modules/account'));
 
-const Admin = React.lazy(() => import(/* webpackChunkName: "administration" */ 'app/modules/administration'));
+const Admin = React.lazy(() => import('app/modules/administration'));
 const AppRoutes = () => {
   return (
     <div className="view-routes">
@@ -59,7 +58,6 @@ const AppRoutes = () => {
               </PrivateRoute>
             }
           />
-          <Route path="*" element={<PageNotFound />} />
         </ErrorBoundaryRoutes>
       </Suspense>
     </div>

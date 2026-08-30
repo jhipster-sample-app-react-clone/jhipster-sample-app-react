@@ -1,9 +1,3 @@
 import { all } from 'deepmerge';
 
-const context = import.meta.webpackContext('./', {
-  recursive: false,
-  regExp: /\.json$/,
-});
-const translations = context.keys().map(key => context(key));
-
-export default all(translations);
+export default all(Object.values(import.meta.glob('./*.json', { import: 'default', eager: true })));

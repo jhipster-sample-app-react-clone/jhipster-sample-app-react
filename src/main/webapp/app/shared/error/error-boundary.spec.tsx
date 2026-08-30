@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import React from 'react';
 
 import { render } from '@testing-library/react';
@@ -16,11 +16,11 @@ describe('error component', () => {
     vi.spyOn((globalThis as any).console, 'error').mockImplementation(() => false);
   });
 
-  it('Should throw an error when component is not enclosed in Error Boundary', () => {
+  it('should throw an error when component is not enclosed in Error Boundary', () => {
     expect(() => render(<ErrorComp />)).toThrow(Error);
   });
 
-  it('Should call Error Boundary componentDidCatch method', () => {
+  it('should call Error Boundary componentDidCatch method', () => {
     const spy = vi.spyOn(ErrorBoundary.prototype, 'componentDidCatch');
     render(
       <ErrorBoundary>

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import React from 'react';
 import { MemoryRouter, Route } from 'react-router';
 
@@ -21,7 +21,7 @@ describe('error-boundary-routes component', () => {
     vi.spyOn((globalThis as any).console, 'error').mockImplementation(() => false);
   });
 
-  it('Should render fallback component when an uncaught error is thrown in route', () => {
+  it('should render fallback component when an uncaught error is thrown in route', () => {
     const { container } = render(
       <MemoryRouter>
         <ErrorBoundaryRoutes>
@@ -32,7 +32,7 @@ describe('error-boundary-routes component', () => {
     expect(container.innerHTML).toEqual('<div><h2 class="error">An unexpected error has occurred.</h2></div>');
   });
 
-  it('Should not render fallback component when route with uncaught error is not matched', () => {
+  it('should not render fallback component when route with uncaught error is not matched', () => {
     const { container } = render(
       <MemoryRouter initialEntries={['/path']}>
         <ErrorBoundaryRoutes>
@@ -44,7 +44,7 @@ describe('error-boundary-routes component', () => {
     expect(container.innerHTML).toEqual('<div>No error</div>');
   });
 
-  it('Should not render fallback component when no uncaught error is thrown', () => {
+  it('should not render fallback component when no uncaught error is thrown', () => {
     const { container } = render(
       <MemoryRouter>
         <ErrorBoundaryRoutes>

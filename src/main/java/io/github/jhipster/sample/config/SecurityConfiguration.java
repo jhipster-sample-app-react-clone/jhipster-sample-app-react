@@ -62,9 +62,7 @@ public class SecurityConfiguration {
                 authz
                     .requestMatchers("/index.html", "/*.js", "/*.txt", "/*.json", "/*.map", "/*.css").permitAll()
                     .requestMatchers("/*.ico", "/*.png", "/*.svg", "/*.webapp").permitAll()
-                    .requestMatchers("/app/**").permitAll()
-                    .requestMatchers("/i18n/**").permitAll()
-                    .requestMatchers("/content/**").permitAll()
+                    .requestMatchers("/assets/**").permitAll()
                     .requestMatchers("/swagger-ui/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/authenticate").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/authenticate").permitAll()

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import React from 'react';
 import { MemoryRouter } from 'react-router';
 
@@ -38,14 +38,14 @@ describe('AccountMenu', () => {
     mountedWrapper = undefined;
   });
 
-  it('Renders a authenticated AccountMenu component', async () => {
+  it('should render an authenticated AccountMenu component', async () => {
     const html = await authenticatedWrapper();
 
     expect(html).not.toContain('/login');
     expect(html).toContain('/logout');
   });
 
-  it('Renders a guest AccountMenu component', async () => {
+  it('should render a guest AccountMenu component', async () => {
     const html = await guestWrapper();
 
     expect(html).toContain('/login');

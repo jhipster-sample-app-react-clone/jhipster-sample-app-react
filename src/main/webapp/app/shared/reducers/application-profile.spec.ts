@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import axios from 'axios';
 
@@ -56,7 +56,7 @@ describe('Profile reducer tests', () => {
       axios.get = vi.fn().mockResolvedValue(resolvedObject);
     });
 
-    it('dispatches GET_SESSION_PENDING and GET_SESSION_FULFILLED actions', async () => {
+    it('dispatches GET_PROFILE_PENDING and GET_PROFILE_FULFILLED actions', async () => {
       const result = await getProfile()(dispatch, getState, extra);
 
       expect(dispatch).toHaveBeenCalledWith(

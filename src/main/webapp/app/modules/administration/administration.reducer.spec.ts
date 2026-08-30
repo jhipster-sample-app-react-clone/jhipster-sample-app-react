@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import axios from 'axios';
 
@@ -26,8 +26,8 @@ describe('Administration reducer tests', () => {
       errorMessage: null,
       totalItems: 0,
     });
-    expect(isEmpty(state.logs.loggers));
-    expect(isEmpty(state.threadDump));
+    expect(isEmpty(state.logs.loggers)).toBe(true);
+    expect(isEmpty(state.threadDump)).toBe(true);
   }
 
   function testMultipleTypes(types, payload, testFunction, error?) {
