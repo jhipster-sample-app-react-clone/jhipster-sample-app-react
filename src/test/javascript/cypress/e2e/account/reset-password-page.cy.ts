@@ -28,10 +28,10 @@ describe('forgot your password', () => {
   });
 
   it('requires email', () => {
-    cy.get(submitInitResetPasswordSelector).click({ force: true });
+    cy.get(submitInitResetPasswordSelector).click();
     cy.get(emailResetPasswordSelector).should('have.class', classInvalid);
     cy.get(emailResetPasswordSelector).type('user@gmail.com');
-    cy.get(submitInitResetPasswordSelector).click({ force: true });
+    cy.get(submitInitResetPasswordSelector).click();
     cy.get(emailResetPasswordSelector).should('have.class', classValid);
   });
 

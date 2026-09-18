@@ -85,7 +85,7 @@ export const LabelUpdate = () => {
           {loading ? (
             <p>Loading...</p>
           ) : (
-            <ValidatedForm defaultValues={defaultValues()} onSubmit={saveEntity}>
+            <ValidatedForm mode="all" defaultValues={defaultValues()} onSubmit={saveEntity}>
               {!isNew && (
                 <ValidatedField
                   name="id"

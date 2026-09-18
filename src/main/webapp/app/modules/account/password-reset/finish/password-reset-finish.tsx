@@ -30,7 +30,7 @@ export const PasswordResetFinishPage = () => {
 
   const getResetForm = () => {
     return (
-      <ValidatedForm onSubmit={handleValidSubmit}>
+      <ValidatedForm mode="all" onSubmit={handleValidSubmit}>
         <ValidatedField
           name="newPassword"
           label={translate('global.form.newpassword.label')}

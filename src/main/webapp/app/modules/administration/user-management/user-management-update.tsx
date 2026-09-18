@@ -70,7 +70,7 @@ export const UserManagementUpdate = () => {
           {loading ? (
             <p>Loading...</p>
           ) : (
-            <ValidatedForm onSubmit={saveUser} defaultValues={user}>
+            <ValidatedForm mode="all" onSubmit={saveUser} defaultValues={user}>
               {user.id && (
                 <ValidatedField
                   type="text"

@@ -38,9 +38,21 @@ const config = defineConfig({
   build: {
     emptyOutDir: true,
     outDir: fileURLToPath(new URL('./target/classes/static/', import.meta.url)),
-    rollupOptions: {
+    rolldownOptions: {
       input: {
         app: fileURLToPath(new URL('./src/main/webapp/index.html', import.meta.url)),
+      },
+      output: {
+        // Split the vendor code into cacheable chunks instead of one oversized bundle.
+        codeSplitting: {
+          groups: [
+            { name: 'vendor-react', test: /node_modules[\\/](react|react-dom|scheduler|react-router)[\\/]/, priority: 40 },
+            { name: 'vendor-redux', test: /node_modules[\\/](@reduxjs[\\/]toolkit|react-redux|redux|immer|reselect)[\\/]/, priority: 30 },
+            { name: 'vendor-bootstrap', test: /node_modules[\\/](react-bootstrap|@restart|bootstrap)[\\/]/, priority: 20 },
+            { name: 'vendor-fontawesome', test: /node_modules[\\/]@fortawesome[\\/]/, priority: 10 },
+            { name: 'vendor', test: /node_modules[\\/]/, priority: 1 },
+          ],
+        },
       },
     },
   },

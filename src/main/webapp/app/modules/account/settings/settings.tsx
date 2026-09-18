@@ -46,7 +46,7 @@ export const SettingsPage = () => {
               User settings for {account.login}
             </Translate>
           </h2>
-          <ValidatedForm id="settings-form" onSubmit={handleValidSubmit} defaultValues={account}>
+          <ValidatedForm mode="all" id="settings-form" onSubmit={handleValidSubmit} defaultValues={account}>
             <ValidatedField
               name="firstName"
               label={translate('settings.form.firstname')}
