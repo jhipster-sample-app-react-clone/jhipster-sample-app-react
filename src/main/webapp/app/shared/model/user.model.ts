@@ -1,3 +1,5 @@
+import { Authority } from 'app/shared/jhipster/constants';
+
 export interface IUser {
   id?: any;
   login?: string;
@@ -13,6 +15,9 @@ export interface IUser {
   lastModifiedDate?: Date | null;
   password?: string;
 }
+
+export const isAdmin = (authorities?: any[]): boolean =>
+  Array.isArray(authorities) && authorities.some(authority => authority === Authority.ADMIN || authority === `ROLE_${Authority.ADMIN}`);
 
 export const defaultValue: Readonly<IUser> = {
   login: '',

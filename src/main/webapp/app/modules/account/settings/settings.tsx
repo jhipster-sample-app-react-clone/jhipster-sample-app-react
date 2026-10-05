@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
-import { Translate, ValidatedField, ValidatedForm, isEmail, translate } from 'react-jhipster';
+import { Translate, ValidatedField, ValidatedForm, translate } from 'react-jhipster';
 
 import { toast } from 'react-toastify';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { languages, locales } from 'app/config/translation';
 import { getSession } from 'app/shared/reducers/authentication';
+import { MAX_EMAIL_LENGTH, MAX_NAME_LENGTH, isValidEmail, isValidName, normaliseEmail } from 'app/shared/util/form-validation';
 
 import { reset, saveAccountSettings } from './settings.reducer';
 
@@ -33,6 +34,7 @@ export const SettingsPage = () => {
       saveAccountSettings({
         ...account,
         ...values,
+        email: normaliseEmail(values.email),
       }),
     );
   };
@@ -55,7 +57,8 @@ export const SettingsPage = () => {
               validate={{
                 required: { value: true, message: translate('settings.messages.validate.firstname.required') },
                 minLength: { value: 1, message: translate('settings.messages.validate.firstname.minlength') },
-                maxLength: { value: 50, message: translate('settings.messages.validate.firstname.maxlength') },
+                maxLength: { value: MAX_NAME_LENGTH, message: translate('settings.messages.validate.firstname.maxlength') },
+                validate: v => isValidName(v) || translate('settings.messages.validate.firstname.invalid'),
               }}
               data-cy="firstname"
             />
@@ -67,7 +70,8 @@ export const SettingsPage = () => {
               validate={{
                 required: { value: true, message: translate('settings.messages.validate.lastname.required') },
                 minLength: { value: 1, message: translate('settings.messages.validate.lastname.minlength') },
-                maxLength: { value: 50, message: translate('settings.messages.validate.lastname.maxlength') },
+                maxLength: { value: MAX_NAME_LENGTH, message: translate('settings.messages.validate.lastname.maxlength') },
+                validate: v => isValidName(v) || translate('settings.messages.validate.lastname.invalid'),
               }}
               data-cy="lastname"
             />
@@ -79,8 +83,8 @@ export const SettingsPage = () => {
               validate={{
                 required: { value: true, message: translate('global.messages.validate.email.required') },
                 minLength: { value: 5, message: translate('global.messages.validate.email.minlength') },
-                maxLength: { value: 254, message: translate('global.messages.validate.email.maxlength') },
-                validate: v => isEmail(v) || translate('global.messages.validate.email.invalid'),
+                maxLength: { value: MAX_EMAIL_LENGTH, message: translate('global.messages.validate.email.maxlength') },
+                validate: v => isValidEmail(v) || translate('global.messages.validate.email.invalid'),
               }}
               data-cy="email"
             />
