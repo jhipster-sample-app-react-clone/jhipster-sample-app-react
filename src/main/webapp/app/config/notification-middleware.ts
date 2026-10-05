@@ -17,6 +17,19 @@ const addErrorAlert = (message: ToastMessage) => {
   toast.error(message.key ? (translate(message.key, message.data) ?? message.message) : message.message);
 };
 
+const TOAST_DEDUPE_INTERVAL = 5_000;
+
+const lastNetworkErrorAt = new Map<string, number>();
+
+const addNetworkErrorAlert = (message: ToastMessage) => {
+  const now = Date.now();
+  const previous = lastNetworkErrorAt.get(message.key ?? '') ?? 0;
+  if (now - previous > TOAST_DEDUPE_INTERVAL) {
+    lastNetworkErrorAt.set(message.key ?? '', now);
+    addErrorAlert(message);
+  }
+};
+
 const getFieldErrorsToasts = (fieldErrors: FieldErrorVM[]): ToastMessage[] =>
   fieldErrors.map(fieldError => {
     if (['Min', 'Max', 'DecimalMin', 'DecimalMax'].includes(fieldError.message)) {
@@ -54,7 +67,7 @@ export default () => next => action => {
         // Ignore, authentication status check and authentication are treated differently.
       } else if (response.status === 0) {
         // connection refused, server not reachable
-        addErrorAlert({
+        addNetworkErrorAlert({
           message: 'Server not reachable',
           key: 'error.server.not.reachable',
         });
