@@ -2,9 +2,8 @@ import React, { useEffect } from 'react';
 import { Alert, Button, Col, Row } from 'react-bootstrap';
 import { Translate, ValidatedField, ValidatedForm, isEmail, translate } from 'react-jhipster';
 
-import { toast } from 'react-toastify';
-
 import { useAppDispatch, useAppSelector } from 'app/config/store';
+import { useReducerMessages } from 'app/shared/hooks/use-reducer-messages';
 import { handlePasswordResetInit, reset } from '../password-reset.reducer';
 
 export const PasswordResetInit = () => {
@@ -23,11 +22,7 @@ export const PasswordResetInit = () => {
 
   const successMessage = useAppSelector(state => state.passwordReset.successMessage);
 
-  useEffect(() => {
-    if (successMessage) {
-      toast.success(translate(successMessage));
-    }
-  }, [successMessage]);
+  useReducerMessages({ successMessage });
 
   return (
     <div>

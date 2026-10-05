@@ -2,13 +2,12 @@ import React, { useEffect } from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
 import { Translate, ValidatedField, ValidatedForm, isEmail, translate } from 'react-jhipster';
 
-import { toast } from 'react-toastify';
-
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { languages, locales } from 'app/config/translation';
+import { useReducerMessages } from 'app/shared/hooks/use-reducer-messages';
 import { getSession } from 'app/shared/reducers/authentication';
 
-import { reset, saveAccountSettings } from './settings.reducer';
+import { saveAccountSettings } from './settings.reducer';
 
 export const SettingsPage = () => {
   const dispatch = useAppDispatch();
@@ -17,16 +16,9 @@ export const SettingsPage = () => {
 
   useEffect(() => {
     dispatch(getSession());
-    return () => {
-      dispatch(reset());
-    };
   }, []);
 
-  useEffect(() => {
-    if (successMessage) {
-      toast.success(translate(successMessage));
-    }
-  }, [successMessage]);
+  useReducerMessages({ successMessage });
 
   const handleValidSubmit = values => {
     dispatch(

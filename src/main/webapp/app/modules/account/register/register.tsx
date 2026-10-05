@@ -3,9 +3,8 @@ import { Alert, Button, Col, Row } from 'react-bootstrap';
 import { Translate, ValidatedField, ValidatedForm, isEmail, translate } from 'react-jhipster';
 import { Link } from 'react-router';
 
-import { toast } from 'react-toastify';
-
 import { useAppDispatch, useAppSelector } from 'app/config/store';
+import { useReducerMessages } from 'app/shared/hooks/use-reducer-messages';
 import PasswordStrengthBar from 'app/shared/layout/password/password-strength-bar';
 
 import { handleRegister, reset } from './register.reducer';
@@ -29,13 +28,9 @@ export const RegisterPage = () => {
 
   const updatePassword = event => setPassword(event.target.value);
 
-  const successMessage = useAppSelector(state => state.register.successMessage);
+  const successMessage = useAppSelector(state => state.settings.successMessage);
 
-  useEffect(() => {
-    if (successMessage) {
-      toast.success(translate(successMessage));
-    }
-  }, [successMessage]);
+  useReducerMessages({ successMessage });
 
   return (
     <div>

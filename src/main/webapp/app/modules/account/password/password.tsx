@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
 import { Translate, ValidatedField, ValidatedForm, translate } from 'react-jhipster';
 
-import { toast } from 'react-toastify';
-
 import { useAppDispatch, useAppSelector } from 'app/config/store';
+import { useReducerMessages } from 'app/shared/hooks/use-reducer-messages';
 import PasswordStrengthBar from 'app/shared/layout/password/password-strength-bar';
 import { getSession } from 'app/shared/reducers/authentication';
 
@@ -32,14 +31,7 @@ export const PasswordPage = () => {
   const successMessage = useAppSelector(state => state.password.successMessage);
   const errorMessage = useAppSelector(state => state.password.errorMessage);
 
-  useEffect(() => {
-    if (successMessage) {
-      toast.success(translate(successMessage));
-    } else if (errorMessage) {
-      toast.error(translate(errorMessage));
-    }
-    dispatch(reset());
-  }, [successMessage, errorMessage]);
+  useReducerMessages({ successMessage, errorMessage });
 
   return (
     <div>
