@@ -5,6 +5,9 @@ import io.github.jhipster.sample.repository.OperationRepository;
 import io.github.jhipster.sample.service.dto.OperationDTO;
 import io.github.jhipster.sample.service.mapper.OperationMapper;
 import io.github.jhipster.sample.web.rest.errors.BadRequestAlertException;
+import io.github.jhipster.sample.web.rest.util.RestListQuery;
+import io.github.jhipster.sample.web.rest.util.RestPageResponse;
+import io.github.jhipster.sample.web.rest.util.RestSortProperties;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
@@ -17,13 +20,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
-import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
@@ -163,14 +163,12 @@ public class OperationResource {
         @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
     ) {
         LOG.debug("REST request to get a page of Operations");
-        Page<OperationDTO> page;
-        if (eagerload) {
-            page = operationRepository.findAllWithEagerRelationships(pageable).map(operationMapper::toDto);
-        } else {
-            page = operationRepository.findAll(pageable).map(operationMapper::toDto);
+        if (!RestListQuery.onlyContainsAllowedProperties(pageable, RestSortProperties.OPERATION)) {
+            return ResponseEntity.badRequest().build();
         }
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
+        Pageable query = RestListQuery.normalize(pageable);
+        Page<OperationDTO> page = operationRepository.findAll(query).map(operationMapper::toDto);
+        return RestPageResponse.ok(page);
     }
 
     /**

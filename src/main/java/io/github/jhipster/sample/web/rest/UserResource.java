@@ -10,6 +10,9 @@ import io.github.jhipster.sample.service.dto.AdminUserDTO;
 import io.github.jhipster.sample.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.sample.web.rest.errors.EmailAlreadyUsedException;
 import io.github.jhipster.sample.web.rest.errors.LoginAlreadyUsedException;
+import io.github.jhipster.sample.web.rest.util.RestListQuery;
+import io.github.jhipster.sample.web.rest.util.RestPageResponse;
+import io.github.jhipster.sample.web.rest.util.RestSortProperties;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import java.net.URI;
@@ -20,15 +23,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
-import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
@@ -58,20 +56,6 @@ import tech.jhipster.web.util.ResponseUtil;
 @RestController
 @RequestMapping("/api/admin")
 public class UserResource {
-
-    private static final List<String> ALLOWED_ORDERED_PROPERTIES = List.of(
-        "id",
-        "login",
-        "firstName",
-        "lastName",
-        "email",
-        "activated",
-        "langKey",
-        "createdBy",
-        "createdDate",
-        "lastModifiedBy",
-        "lastModifiedDate"
-    );
 
     private static final Logger LOG = LoggerFactory.getLogger(UserResource.class);
 
@@ -164,17 +148,12 @@ public class UserResource {
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<List<AdminUserDTO>> getAllUsers(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
         LOG.debug("REST request to get all User for an admin");
-        if (!onlyContainsAllowedProperties(pageable)) {
+        if (!RestListQuery.onlyContainsAllowedProperties(pageable, RestSortProperties.PUBLIC_USER)) {
             return ResponseEntity.badRequest().build();
         }
 
-        final Page<AdminUserDTO> page = userService.getAllManagedUsers(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
-    private boolean onlyContainsAllowedProperties(Pageable pageable) {
-        return pageable.getSort().stream().map(Sort.Order::getProperty).allMatch(ALLOWED_ORDERED_PROPERTIES::contains);
+        final Page<AdminUserDTO> page = userService.getAllManagedUsers(RestListQuery.normalize(pageable));
+        return RestPageResponse.ok(page);
     }
 
     /**
