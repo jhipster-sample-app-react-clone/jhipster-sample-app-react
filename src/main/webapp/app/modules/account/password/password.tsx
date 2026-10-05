@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import PasswordStrengthBar from 'app/shared/layout/password/password-strength-bar';
 import { getSession } from 'app/shared/reducers/authentication';
+import { MAX_PASSWORD_LENGTH, MIN_PASSWORD_LENGTH, isPasswordAcceptable, passwordsMatch } from 'app/shared/util/form-validation';
 
 import { reset, savePassword } from './password.reducer';
 
@@ -23,10 +24,10 @@ export const PasswordPage = () => {
   }, []);
 
   const handleValidSubmit = ({ currentPassword, newPassword }: Record<string, any>) => {
-    dispatch(savePassword({ currentPassword, newPassword }));
+    dispatch(savePassword({ currentPassword, newPassword: newPassword ?? currentPassword }));
   };
 
-  const updatePassword = event => setPassword(event.target.value);
+  const updatePassword = (event: React.ChangeEvent<HTMLInputElement>) => setPassword(event.target.value);
 
   const account = useAppSelector(state => state.authentication.account);
   const successMessage = useAppSelector(state => state.password.successMessage);
@@ -68,8 +69,9 @@ export const PasswordPage = () => {
               type="password"
               validate={{
                 required: { value: true, message: translate('global.messages.validate.newpassword.required') },
-                minLength: { value: 4, message: translate('global.messages.validate.newpassword.minlength') },
-                maxLength: { value: 50, message: translate('global.messages.validate.newpassword.maxlength') },
+                minLength: { value: MIN_PASSWORD_LENGTH, message: translate('global.messages.validate.newpassword.minlength') },
+                maxLength: { value: MAX_PASSWORD_LENGTH, message: translate('global.messages.validate.newpassword.maxlength') },
+                validate: v => isPasswordAcceptable(v) || translate('global.messages.validate.newpassword.invalid'),
               }}
               onChange={updatePassword}
               data-cy="newPassword"
@@ -82,9 +84,9 @@ export const PasswordPage = () => {
               type="password"
               validate={{
                 required: { value: true, message: translate('global.messages.validate.confirmpassword.required') },
-                minLength: { value: 4, message: translate('global.messages.validate.confirmpassword.minlength') },
-                maxLength: { value: 50, message: translate('global.messages.validate.confirmpassword.maxlength') },
-                validate: v => v === password || translate('global.messages.error.dontmatch'),
+                minLength: { value: MIN_PASSWORD_LENGTH, message: translate('global.messages.validate.confirmpassword.minlength') },
+                maxLength: { value: MAX_PASSWORD_LENGTH, message: translate('global.messages.validate.confirmpassword.maxlength') },
+                validate: v => passwordsMatch(v, password) || translate('global.messages.error.dontmatch'),
               }}
               data-cy="confirmPassword"
             />
