@@ -3,9 +3,8 @@ import { Button, Col, Row } from 'react-bootstrap';
 import { Translate, ValidatedField, ValidatedForm, translate } from 'react-jhipster';
 import { useSearchParams } from 'react-router';
 
-import { toast } from 'react-toastify';
-
 import { useAppDispatch, useAppSelector } from 'app/config/store';
+import { useReducerMessages } from 'app/shared/hooks/use-reducer-messages';
 import PasswordStrengthBar from 'app/shared/layout/password/password-strength-bar';
 import { handlePasswordResetFinish, reset } from '../password-reset.reducer';
 
@@ -29,6 +28,10 @@ export const PasswordResetFinishPage = () => {
   const updatePassword = event => setPassword(event.target.value);
 
   const getResetForm = () => {
+    const successMessage = useAppSelector(state => state.passwordReset.successMessage);
+
+    useReducerMessages({ successMessage });
+
     return (
       <ValidatedForm mode="all" onSubmit={handleValidSubmit}>
         <ValidatedField
@@ -64,14 +67,6 @@ export const PasswordResetFinishPage = () => {
       </ValidatedForm>
     );
   };
-
-  const successMessage = useAppSelector(state => state.passwordReset.successMessage);
-
-  useEffect(() => {
-    if (successMessage) {
-      toast.success(translate(successMessage));
-    }
-  }, [successMessage]);
 
   return (
     <div>
