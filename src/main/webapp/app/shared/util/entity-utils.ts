@@ -1,6 +1,6 @@
 import { IPaginationBaseState, ISortBaseState } from 'react-jhipster';
 
-import { SORT } from 'app/shared/util/pagination.constants';
+import { parseListQuery } from 'app/shared/util/list-query';
 
 /**
  * Removes fields with an 'id' field that equals ''.
@@ -24,25 +24,11 @@ export const cleanEntity = entity => {
 export const mapIdList = (idList: readonly any[]) => idList?.filter(id => id !== '').map(id => ({ id }));
 
 export const overrideSortStateWithQueryParams = (paginationBaseState: ISortBaseState, locationSearch: string) => {
-  const params = new URLSearchParams(locationSearch);
-  const sort = params.get(SORT);
-  if (sort) {
-    const sortSplit = sort.split(',');
-    paginationBaseState.sort = sortSplit[0];
-    paginationBaseState.order = sortSplit[1];
-  }
-  return paginationBaseState;
+  const { sort, order } = parseListQuery(locationSearch);
+  return { ...paginationBaseState, sort, order };
 };
 
 export const overridePaginationStateWithQueryParams = (paginationBaseState: IPaginationBaseState, locationSearch: string) => {
-  const sortedPaginationState: IPaginationBaseState = overrideSortStateWithQueryParams(
-    paginationBaseState,
-    locationSearch,
-  ) as IPaginationBaseState;
-  const params = new URLSearchParams(locationSearch);
-  const page = params.get('page');
-  if (page) {
-    sortedPaginationState.activePage = +page;
-  }
-  return sortedPaginationState;
+  const { activePage, itemsPerPage, sort, order } = parseListQuery(locationSearch);
+  return { ...paginationBaseState, activePage, itemsPerPage, sort, order } as IPaginationBaseState;
 };

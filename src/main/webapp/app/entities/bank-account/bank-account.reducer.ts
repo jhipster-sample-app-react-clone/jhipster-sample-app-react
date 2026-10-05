@@ -4,6 +4,7 @@ import axios from 'axios';
 import { IBankAccount, defaultValue } from 'app/shared/model/bank-account.model';
 import { EntityState, IQueryParams, createEntitySlice, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
 import { cleanEntity } from 'app/shared/util/entity-utils';
+import { parseListQuery } from 'app/shared/util/list-query';
 import { ASC } from 'app/shared/util/pagination.constants';
 
 const initialState: EntityState<IBankAccount> = {
@@ -27,6 +28,14 @@ export const getEntities = createAsyncThunk(
   },
   { serializeError: serializeAxiosError },
 );
+
+export const sortBankAccounts = (accounts: readonly IBankAccount[], sort?: string): IBankAccount[] => {
+  if (!sort) {
+    return [...accounts];
+  }
+  const { sort: predicate, order } = parseListQuery(`?sort=${sort}`);
+  return [...accounts].sort((a, b) => (order === ASC ? (a[predicate] > b[predicate] ? -1 : 1) : b[predicate] > a[predicate] ? -1 : 1));
+};
 
 export const getEntity = createAsyncThunk(
   'bankAccount/fetch_entity',
@@ -100,13 +109,7 @@ export const BankAccountSlice = createEntitySlice({
         return {
           ...state,
           loading: false,
-          entities: data.sort((a, b) => {
-            if (!action.meta?.arg?.sort) {
-              return 1;
-            }
-            const [predicate, order] = action.meta.arg.sort.split(',');
-            return order === ASC ? (a[predicate] < b[predicate] ? -1 : 1) : b[predicate] < a[predicate] ? -1 : 1;
-          }),
+          entities: sortBankAccounts(data, action.meta?.arg?.sort),
         };
       })
       .addMatcher(isFulfilled(createEntity, updateEntity, partialUpdateEntity), (state, action) => {

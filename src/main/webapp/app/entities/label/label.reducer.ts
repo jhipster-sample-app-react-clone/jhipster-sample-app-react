@@ -5,6 +5,7 @@ import { ILabel, defaultValue } from 'app/shared/model/label.model';
 import { EntityState, IQueryParams, createEntitySlice, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
 import { cleanEntity } from 'app/shared/util/entity-utils';
 import { ASC } from 'app/shared/util/pagination.constants';
+import { parseListQuery } from 'app/shared/util/list-query';
 
 const initialState: EntityState<ILabel> = {
   loading: false,
@@ -27,6 +28,14 @@ export const getEntities = createAsyncThunk(
   },
   { serializeError: serializeAxiosError },
 );
+
+export const sortLabels = (labels: readonly ILabel[], sort?: string): ILabel[] => {
+  if (!sort) {
+    return [...labels];
+  }
+  const { sort: predicate, order } = parseListQuery(`?sort=${sort}`);
+  return [...labels].sort((a, b) => (order === ASC ? (a[predicate] > b[predicate] ? -1 : 1) : b[predicate] > a[predicate] ? -1 : 1));
+};
 
 export const getEntity = createAsyncThunk(
   'label/fetch_entity',
@@ -100,13 +109,7 @@ export const LabelSlice = createEntitySlice({
         return {
           ...state,
           loading: false,
-          entities: data.sort((a, b) => {
-            if (!action.meta?.arg?.sort) {
-              return 1;
-            }
-            const [predicate, order] = action.meta.arg.sort.split(',');
-            return order === ASC ? (a[predicate] < b[predicate] ? -1 : 1) : b[predicate] < a[predicate] ? -1 : 1;
-          }),
+          entities: sortLabels(data, action.meta?.arg?.sort),
         };
       })
       .addMatcher(isFulfilled(createEntity, updateEntity, partialUpdateEntity), (state, action) => {
